@@ -1,8 +1,6 @@
-# -*- coding:utf-8 -*-
-#!/usr/bin/python3
-'''
-@File: apps
-@time:2023/1/3
-@Author:majiaqin 170479
-@Desc:
-'''
+from django.apps import AppConfig
+
+
+class BlogConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'blog'
