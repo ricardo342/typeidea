@@ -16,7 +16,7 @@ class Category(models.Model):
                                          choices=STATUS_ITEMS,
                                          verbose_name="状态")
     is_nav = models.BooleanField(default=False, verbose_name="是否为导航")
-    owner = models.ForeignKey(User, verbose_name="作者", on_delete=None)
+    owner = models.ForeignKey(User, verbose_name="作者", on_delete=models.CASCADE)
     create_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
     class Meta:
@@ -35,7 +35,7 @@ class Tag(models.Model):
                                          choices=STATUS_ITEMS,
                                          verbose_name="状态")
     is_nav = models.BooleanField(default=False, verbose_name="是否为导航")
-    owner = models.ForeignKey(User, verbose_name="作者", on_delete=None)
+    owner = models.ForeignKey(User, verbose_name="作者", on_delete=models.CASCADE)
     create_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
     class Meta:
@@ -57,9 +57,9 @@ class Post(models.Model):
     status = models.PositiveIntegerField(default=STATUS_NORMAL,
                                          choices=STATUS_ITEMS,
                                          verbose_name="状态")
-    category = models.ForeignKey(Category, verbose_name="分类", on_delete=None)
+    category = models.ForeignKey(Category, verbose_name="分类", on_delete=models.CASCADE)
     tag = models.ManyToManyField(Tag, verbose_name="标签")
-    owner = models.ForeignKey(User, verbose_name="作者", on_delete=None)
+    owner = models.ForeignKey(User, verbose_name="作者", on_delete=models.CASCADE)
     create_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
     class Meta:
