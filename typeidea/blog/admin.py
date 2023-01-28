@@ -20,6 +20,12 @@ class CategoryAdmin(admin.ModelAdmin):
         obj.owner = request.user
         return super(CategoryAdmin, self).save_model(request, obj, form, change)
 
+    class Media:
+        css = {
+            'all': ('https://cdn.bootcss.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css',),
+        }
+        js = ('https://cdn.bootcss.com/bootstrap/4.0.0-beta.2/js/bootstrap.bundle.js',)
+
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = ('name', 'status', 'create_time')
@@ -29,23 +35,73 @@ class TagAdmin(admin.ModelAdmin):
         obj.owner = request.user
         return super(TagAdmin, self).save_model(request, obj, form, change)
 
+    class Media:
+        css = {
+            'all': ('https://cdn.bootcss.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css',),
+        }
+        js = ('https://cdn.bootcss.com/bootstrap/4.0.0-beta.2/js/bootstrap.bundle.js',)
+
+class CategoryOwnerFilter(admin.SimpleListFilter):
+    '''自定义过滤器只展示当前用户分类'''
+    title = '分类过滤器'
+    parameter_name = 'owner_category'
+
+    def lookups(self, request, model_admin):
+        return Category.objects.filter(owner=request.user).values_list('id', 'name')
+
+    def queryset(self, request, queryset):
+        category_id = self.value()
+        if category_id:
+            return queryset.filter(category_id=self.value())
+        return queryset
+
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ['title', 'category', 'status',
+    list_display = ['title', 'category', 'owner', 'status',
                     'create_time', 'operator']
     list_display_links = []
 
-    list_filter = ['category', ]
+    list_filter = [CategoryOwnerFilter]
     search_fields = ['title', 'category__name']
-
-    actions_on_top = True
-    actions_on_bottom = True
 
     # 编辑页面
     save_on_top = True
+    actions_on_top = True
+    actions_on_bottom = True
 
-    fields = (('category', 'title'), 'desc',
-              'status', 'content', 'tag', )
+    exclude = ('owner', )
+
+    # 限定展示字段, 配置展示字段的顺序
+    # fields = (('category', 'title'),
+    #           'desc',
+    #           'status',
+    #           'content',
+    #           'tag',)
+
+    # 控制页面布局, 配置展示字段的顺序
+    fieldsets = (
+        ('基础配置', {
+            'description': '基础配置描述',
+            'fields': (
+                ('title', 'category'),
+                'status',
+            ),
+        }),
+        ('内容', {
+            'fields': (
+                'desc',
+                'content',
+            ),
+        }),
+        ('额外信息', {
+            'classes': ('collapse',),
+            'fields': ('tag',),
+        }),
+    )
+
+    # 设置字段是横向还是纵向展示
+    filter_horizontal = ('tag', )
+    # filter_vertical = ('tag', )
 
     def operator(self, obj):
         return format_html(
@@ -57,3 +113,14 @@ class PostAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         obj.owner = request.user
         return super(PostAdmin, self).save_model(request, obj, form, change)
+
+    def get_queryset(self, request):
+        qs = super(PostAdmin, self).get_queryset(request)
+        return qs.filter(owner=request.user)
+
+    # 自定义编辑页css和js样式
+    class Media:
+        css = {
+            'all': ('https://cdn.bootcss.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css',),
+        }
+        js = ('https://cdn.bootcss.com/bootstrap/4.0.0-beta.2/js/bootstrap.bundle.js',)
