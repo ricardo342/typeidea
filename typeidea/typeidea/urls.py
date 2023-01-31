@@ -25,7 +25,7 @@ urlpatterns = [
     path('', post_list),
     path(r'category/(<category_id>)/', post_list),
     path(r'tag/(<tag_id>)/', post_list),
-    path(r'post/(<post_id>).html', post_detail),
+    path('post/<post_id>.html', post_detail),
     path(r'links/', links),
     path(r'super_admin/', admin.site.urls),
     path(r'admin/', custom_site.urls),
