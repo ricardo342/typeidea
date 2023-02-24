@@ -82,6 +82,8 @@ class Post(models.Model):
     tag = models.ManyToManyField(Tag, verbose_name="标签")
     owner = models.ForeignKey(User, verbose_name="作者", on_delete=models.CASCADE)
     create_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
+    pv = models.PositiveIntegerField(default=1)
+    uv = models.PositiveIntegerField(default=1)
 
     # 定义获取tag的函数
     @staticmethod
@@ -111,6 +113,10 @@ class Post(models.Model):
     def latest_post(cls):
         queryset = cls.objects.filter(status=cls.STATUS_NORMAL)
         return queryset
+
+    @classmethod
+    def hot_post(cls):
+        return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
 
     def __str__(self):
         return self.title
