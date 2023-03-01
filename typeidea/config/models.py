@@ -67,8 +67,8 @@ class SideBar(models.Model):
     @property
     def content_html(self):
         """直接渲染模板"""
-        from typeidea.blog.models import Post
-        from typeidea.comment.models import Comment
+        from blog.models import Post
+        from comment.models import Comment
 
         result = ''
         if self.display_type == self.DISPLAY_HTML:
