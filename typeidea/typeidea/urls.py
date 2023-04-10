@@ -17,14 +17,17 @@ from django.contrib import admin
 from django.urls import path
 
 from .custom_site import custom_site
-from blog.views import post_list, post_detail, PostDetailView
+from blog.views import (
+    IndexView, CategoryView, TagView,
+    PostDetailView
+)
 from config.views import links
 
 
 urlpatterns = [
-    path('', post_list, name='index'),
-    path(r'category/(<category_id>)/', post_list, name='category-list'),
-    path(r'tag/(<tag_id>)/', post_list, name='tag-list'),
+    path('', IndexView.as_view(), name='index'),
+    path(r'category/(<category_id>)/', CategoryView.as_view(), name='category-list'),
+    path(r'tag/(<tag_id>)/', TagView.as_view(), name='tag-list'),
     # path('post/<post_id>.html', post_detail, name='post-detail'),
     path(r'^post/(?P<pk>\d+).html$', PostDetailView.as_view(), name='post-detail'),
     path(r'links/', links, name='links'),
