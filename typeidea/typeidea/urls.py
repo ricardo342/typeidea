@@ -26,10 +26,10 @@ from config.views import links
 
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
-    path(r'category/(<category_id>)/', CategoryView.as_view(), name='category-list'),
-    path(r'tag/(<tag_id>)/', TagView.as_view(), name='tag-list'),
+    path(r'category/<int:category_id>/', CategoryView.as_view(), name='category-list'),
+    path(r'tag/<int:tag_id>/', TagView.as_view(), name='tag-list'),
     # path('post/<post_id>.html', post_detail, name='post-detail'),
-    path(r'^post/(?P<pk>\d+).html$', PostDetailView.as_view(), name='post-detail'),
+    path(r'post/<int:pk>.html', PostDetailView.as_view(), name='post-detail'),
     path(r'links/', links, name='links'),
     path(r'super_admin/', admin.site.urls, name='super-admin'),
     path(r'admin/', custom_site.urls, name='admin'),

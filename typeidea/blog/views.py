@@ -37,7 +37,7 @@ class CategoryView(IndexView):
         '''重写queryset, 根据分类过滤'''
         queryset = super(CategoryView, self).get_queryset()
         category_id = self.kwargs.get('category_id')
-        return queryset.filter(category_id=category_id)
+        return queryset.filter(category__id=category_id)
 
 class TagView(IndexView):
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -90,10 +90,6 @@ def post_detail(request, post_id=None):
                'sidebars': SideBar.get_all(), }
     context.update(Category.get_navs())
     return render(request, 'blog/detail.html', context=context)
-
-class PostDetailView(DetailView):
-    model = Post
-    template_name = 'blog/detail.html'
 
 class PostListView(ListView):
     queryset = Post.latest_post()
