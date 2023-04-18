@@ -61,6 +61,13 @@ THEME = 'bootstrap'
 '''无主题'''
 # THEME = 'default'
 
+STATIC_ROOT = 'tmp/static'
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'themes', THEME, "static"),
+]
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
