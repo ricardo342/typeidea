@@ -2,7 +2,7 @@ from django.views.generic import ListView
 from django.shortcuts import render
 from django.http import HttpResponse
 
-from .blog.views import CommonViewMixin
+from blog.views import CommonViewMixin
 from .models import Link
 
 # Create your views here.

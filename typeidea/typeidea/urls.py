@@ -22,6 +22,7 @@ from blog.views import (
     PostDetailView, SearchView, AuthorView
 )
 from config.views import links, LinkListView
+from comment.views import CommentView
 
 
 urlpatterns = [
@@ -29,11 +30,12 @@ urlpatterns = [
     path(r'category/<int:category_id>/', CategoryView.as_view(), name='category-list'),
     path(r'tag/<int:tag_id>/', TagView.as_view(), name='tag-list'),
     # path('post/<post_id>.html', post_detail, name='post-detail'),
-    path(r'post/<int:pk>.html', PostDetailView.as_view(), name='post-detail'),
+    path(r'post/<int:post_id>/', PostDetailView.as_view(), name='post-detail'),
     path(r'links/', links, name='links'),
     path(r'super_admin/', admin.site.urls, name='super-admin'),
     path(r'admin/', custom_site.urls, name='admin'),
     path(r'search/', SearchView.as_view(), name='search'),
     path(r'author/<int:owner_id>/', AuthorView.as_view(), name='author'),
     path(r'links/', LinkListView.as_view(), name='links'),
+    path(r'comment/', CommentView.as_view(), name='comment'),
 ]
