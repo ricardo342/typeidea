@@ -7,6 +7,7 @@
 @Desc:
 '''
 from django import forms
+from mistune import markdown
 
 from .models import Comment
 
@@ -47,6 +48,7 @@ class CommentForm(forms.ModelForm):
         content = self.cleaned_data.get('content')
         if len(content) < 10:
             raise forms.ValidationError('内容长度小于10个字符, 请重新输入!')
+        content = markdown(content)
         return content
 
     class Meta:
