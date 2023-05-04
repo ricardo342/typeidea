@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.db.models import Q, F
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
@@ -63,6 +63,15 @@ class PostDetailView(CommonViewMixin, DetailView):
     template_name = 'blog/detail.html'
     context_object_name = 'post'
     pk_url_kwarg = 'post_id'
+
+    def get(self, request, *args, **kwargs):
+        response = super(PostDetailView, self).get(request, *args, **kwargs)
+        Post.objects.filter(pk=self.object.id).update(pv=F('pv')+1, uv=F('uv')+1)
+
+        # 调试用
+        from django.db import connection
+        print(connection.queries)
+        return response
 
     # def get_context_data(self, **kwargs):
     #     context = super(PostDetailView, self).get_context_data(**kwargs)
