@@ -24,7 +24,7 @@ class UserIDMiddleware:
 
     def generate_uid(self, request):
         try:
-            uid = request.COOKIRS[USER_KEY]
+            uid = request.COOKIES[USER_KEY]
         except KeyError:
             uid = uuid.uuid4().hex
         return uuid
