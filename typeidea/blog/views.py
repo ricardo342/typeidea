@@ -1,3 +1,5 @@
+from datetime import date
+from django.core.cache import cache
 from django.db.models import Q, F
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
@@ -64,14 +66,45 @@ class PostDetailView(CommonViewMixin, DetailView):
     context_object_name = 'post'
     pk_url_kwarg = 'post_id'
 
+    # def get(self, request, *args, **kwargs):
+    #     response = super(PostDetailView, self).get(request, *args, **kwargs)
+    #     Post.objects.filter(pk=self.object.id).update(pv=F('pv')+1, uv=F('uv')+1)
+
+
     def get(self, request, *args, **kwargs):
         response = super(PostDetailView, self).get(request, *args, **kwargs)
-        Post.objects.filter(pk=self.object.id).update(pv=F('pv')+1, uv=F('uv')+1)
+        self.handle_visited()
+        return response
 
         # 调试用
-        from django.db import connection
-        print(connection.queries)
-        return response
+        # from django.db import connection
+        # print(connection.queries)
+        # return response
+
+    def handle_visited(self):
+        increase_pv = False
+        increase_uv = False
+        uid = self.request.uid
+        pv_key = 'pv:{0}:{1}'.format(uid, self.request.path)
+        uv_key = 'uv:{0}:{1}:{2}'.format(uid, str(date.today()), self.request.path)
+        if not cache.get(pv_key):
+            increase_pv = True
+            # 设置缓存一分钟有效
+            cache.set(pv_key, 1, 1*60)
+
+        if not cache.get(uv_key):
+            increase_uv = True
+            # 设置缓存24小时有效
+            cache.set(uv_key, 1, 24*60*60)
+
+        if increase_pv and increase_uv:
+            Post.objects.filter(pk=self.object.id).update(pv=F('pv')+1, uv=F('uv')+1)
+
+        elif increase_pv:
+            Post.objects.filter(pk=self.object.id).update(pv=F('pv')+1)
+
+        elif increase_uv:
+            Post.objects.filter(pk=self.object.id).update(pv=F('uv')+1)
 
     # def get_context_data(self, **kwargs):
     #     context = super(PostDetailView, self).get_context_data(**kwargs)

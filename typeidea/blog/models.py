@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.functional import cached_property
 
 from mistune import markdown
 
@@ -120,6 +121,10 @@ class Post(models.Model):
     @classmethod
     def hot_post(cls):
         return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
+
+    @cached_property
+    def tags(self):
+        return ''.join(self.tag.values_list('name', flat=True))
 
     def save(self, *args, **kwargs):
         self.content_html = markdown(self.content)
