@@ -7,6 +7,7 @@
 @Desc:
 '''
 from django import forms
+from ckeditor.widgets import CKEditorWidget
 from mistune import markdown
 
 from .models import Comment
@@ -37,11 +38,9 @@ class CommentForm(forms.ModelForm):
     )
 
     content = forms.CharField(
-        label='内容',
-        max_length=500,
-        widget=forms.widgets.TextInput(
-            attrs={'class': 'form-control', 'rows': 6, 'cols': 60}
-        )
+        widget=CKEditorWidget(),
+        label='正文',
+        required=True
     )
 
     def clean_content(self):
