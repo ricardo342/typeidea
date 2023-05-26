@@ -110,6 +110,23 @@ class PostAdmin(BaseOwnerAdmin):
         }),
     )
 
+    form_layout = (
+        fieldsets(
+            '基础信息',
+            ('title', 'category'),
+            'status',
+            'tag',
+        ),
+        fieldsets(
+            '内容信息',
+            'desc',
+            'is_md',
+            'content_ck',
+            'content_md',
+            'content',
+        )
+    )
+
     # 设置字段是横向还是纵向展示
     filter_horizontal = ('tag', )
     # filter_vertical = ('tag', )

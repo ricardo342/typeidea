@@ -79,6 +79,9 @@ THEME = 'bootstrap'
 STATIC_ROOT = 'tmp/static'
 STATIC_URL = '/static/'
 
+'''自定义Storage'''
+DEFAULT_FILE_STORAGE = 'typeidea.storage.WatermarkStorage'
+
 # 增加文件上传路径
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

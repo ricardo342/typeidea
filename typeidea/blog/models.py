@@ -88,6 +88,7 @@ class Post(models.Model):
     create_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
     pv = models.PositiveIntegerField(default=1)
     uv = models.PositiveIntegerField(default=1)
+    is_md = models.BooleanField(default=False, verbose_name="markdown语法")
 
     # 定义获取tag的函数
     @staticmethod
@@ -127,7 +128,10 @@ class Post(models.Model):
         return ''.join(self.tag.values_list('name', flat=True))
 
     def save(self, *args, **kwargs):
-        self.content_html = markdown(self.content)
+        if self.is_md:
+            self.content_html = markdown(self.content)
+        else:
+            self.content_html = self.content
         super(Post, self).save(*args, **kwargs)
 
     def __str__(self):
