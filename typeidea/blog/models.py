@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.functional import cached_property
+from django.core.cache import cache
 
 from mistune import markdown
 
@@ -121,7 +122,11 @@ class Post(models.Model):
 
     @classmethod
     def hot_post(cls):
-        return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
+        result = cache.get('hot_post')
+        if not result:
+            result = cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
+            cache.set('hot_post', result, 10*60)
+        return result
 
     @cached_property
     def tags(self):

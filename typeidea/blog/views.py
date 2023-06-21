@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.views.generic import DetailView, ListView
+from silk.profiling.profiler import silk_profile
 
 from .models import Post, Tag, Category
 from config.models import SideBar
@@ -14,6 +15,10 @@ from comment.models import Comment
 # Create your views here.
 
 class CommonViewMixin:
+    @silk_profile(name='get_navs')
+    def get_navs(self):
+        pass
+    
     def get_context_data(self, **kwargs):
         context = super(CommonViewMixin, self).get_context_data(**kwargs)
         context.update({

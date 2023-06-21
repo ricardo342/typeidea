@@ -19,6 +19,7 @@ from django.contrib.sitemaps import views as sitemap_views
 from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls.static import static
+from django.views.decorators.cache import cache_page
 from rest_framework.routers import DefaultRouter
 from rest_framework.documentation import include_docs_urls
 
@@ -54,7 +55,9 @@ urlpatterns = [
     path(r'links/', LinkListView.as_view(), name='links'),
     path(r'comment/', CommentView.as_view(), name='comment'),
     path(r'rss|feed/', LatestPostFeed(), name='rss'),
-    path(r'sitemap.xml', sitemap_views.sitemap, {'sitemaps': {'posts': PostSitemap}}),
+    # path(r'sitemap.xml', sitemap_views.sitemap, {'sitemaps': {'posts': PostSitemap}}),
+    path(r'sitemap.xml', cache_page(60*20, key_prefix='sitemap_cache_')
+        (sitemap_views.sitemap), {'sitemaps': {'posts': PostSitemap}}),
     path(r'category-autocomplete/', CategoryAutocomplete.as_view(), name='category-autocomplete'),
     path(r'tag-autocomplete/', TagAutocomplete.as_view(), name='tag-autocomplete'),
     path(r'ckeditor/', include('ckeditor_uploader.urls')),
@@ -63,3 +66,10 @@ urlpatterns = [
     path(r'api/', include(router.urls, namespace='api')),
     path(r'api/docs/', include_docs_urls(title='typeidea apis')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path(r'__debug__/', include(debug_toolbar.urls)),
+        path(r'silk/', include('silk.urls', namespace='silk')),
+    ] + urlpatterns
